@@ -1843,6 +1843,13 @@ function showcommands() {
     fi
 }
 
+export ANDROID_BUILD_TOP=$(gettop)
+
+function repopick() {
+    T=$(gettop)
+    $T/vendor/halcyon/build/tools/repopick.py $@
+}
+
 validate_current_shell
 source_vendorsetup
 addcompletions
