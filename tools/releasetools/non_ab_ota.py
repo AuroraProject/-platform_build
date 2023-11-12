@@ -228,14 +228,6 @@ else if get_stage("%(bcb_dev)s") == "3/3" then
 
   script.Print("=================================================");
   script.Print("");
-  script.Print("-------------------- SOSP-OS --------------------");
-  script.Print("****   *****   ****    *****      *****   ****   ");
-  script.Print("*      *   *   *       *   *      *   *   *      ");
-  script.Print("****   *   *   ****    ***** **** *   *   ****   ");
-  script.Print("   *   *   *      *    *          *   *      *   ");
-  script.Print("****   *****   ****    *          *****   ****   ");
-  script.Print("");
-  script.Print("=================================================");
   script.Print(" Android version  : %s"%(android_version));
   script.Print(" Build id         : %s"%(build_id));
   script.Print(" Build date       : %s"%(build_date));

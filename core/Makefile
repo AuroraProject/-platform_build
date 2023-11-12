@@ -6251,7 +6251,7 @@ product_name := $(TARGET_PRODUCT)
 ifeq ($(TARGET_BUILD_TYPE),debug)
   product_name := $(product_name)_debug
 endif
-name := SOSP-OS-13-$(TARGET_DEVICE)-$(shell date +"%Y%m%d")
+name := Aurora-13-$(TARGET_DEVICE)-$(shell date +"%Y%m%d")
 
 INTERNAL_OTA_PACKAGE_TARGET := $(PRODUCT_OUT)/$(name).zip
 INTERNAL_OTA_METADATA := $(PRODUCT_OUT)/ota_metadata
@@ -6261,7 +6261,7 @@ $(call declare-0p-target,$(INTERNAL_OTA_METADATA))
 ifeq ($(TARGET_BUILD_VARIANT),user)
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
 else
-ifneq ($(SOSP-OS_BUILD),)
+ifneq ($(Aurora_BUILD),)
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := true
 else
     $(INTERNAL_OTA_PACKAGE_TARGET): backuptool := false
