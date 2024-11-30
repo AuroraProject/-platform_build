@@ -316,19 +316,6 @@ $(call soong_config_define_internal,$1,$2) \
 $(eval SOONG_CONFIG_$(strip $1)_$(strip $2):=$(strip $3))
 endef
 
-# soong_config_set_bool is the same as soong_config_set, but it will
-# also type the variable as a bool, so that when using select() expressions
-# in blueprint files they can use boolean values instead of strings.
-# It will only accept "true" for its value, any other value will be
-# treated as false.
-# $1 is the namespace. $2 is the variable name. $3 is the variable value.
-# Ex: $(call soong_config_set_bool,acme,COOL_FEATURE,true)
-define soong_config_set_bool
-$(call soong_config_define_internal,$1,$2) \
-$(eval SOONG_CONFIG_$(strip $1)_$(strip $2):=$(filter true,$3))
-$(eval SOONG_CONFIG_TYPE_$(strip $1)_$(strip $2):=bool)
-endef
-
 # soong_config_append appends to the value of the variable in the given Soong
 # config namespace. If the variable does not exist, it will be defined. If the
 # namespace does not  exist, it will be defined.
@@ -453,9 +440,8 @@ endif
 # See envsetup.mk for a description of SCAN_EXCLUDE_DIRS
 FIND_LEAVES_EXCLUDES := $(addprefix --prune=, $(SCAN_EXCLUDE_DIRS) .repo .git)
 
--include vendor/extra/BoardConfigExtra.mk
-ifneq ($(LINEAGE_BUILD),)
-include vendor/lineage/config/BoardConfigLineage.mk
+ifneq ($(AURORA_BUILD),)
+include vendor/aurora/config/BoardConfigAurora.mk
 endif
 
 # The build system exposes several variables for where to find the kernel
@@ -1261,35 +1247,13 @@ BUILD_WARNING_BAD_OPTIONAL_USES_LIBS_ALLOWLIST := LegacyCamera Gallery2
 # in the source tree.
 dont_bother_goals := out product-graph
 
-ifeq ($(TARGET_SYSTEM_PROP),)
-TARGET_SYSTEM_PROP := $(wildcard $(TARGET_DEVICE_DIR)/system.prop)
-endif
-
-ifeq ($(TARGET_SYSTEM_EXT_PROP),)
-TARGET_SYSTEM_EXT_PROP := $(wildcard $(TARGET_DEVICE_DIR)/system_ext.prop)
-endif
-
-ifeq ($(TARGET_PRODUCT_PROP),)
-TARGET_PRODUCT_PROP := $(wildcard $(TARGET_DEVICE_DIR)/product.prop)
-endif
-
-ifeq ($(TARGET_ODM_PROP),)
-TARGET_ODM_PROP := $(wildcard $(TARGET_DEVICE_DIR)/odm.prop)
-endif
-
-.KATI_READONLY := \
-    TARGET_SYSTEM_PROP \
-    TARGET_SYSTEM_EXT_PROP \
-    TARGET_PRODUCT_PROP \
-    TARGET_ODM_PROP \
-
 include $(BUILD_SYSTEM)/sysprop_config.mk
 
 # Make ANDROID Soong config variables visible to Android.mk files, for
 # consistency with those defined in BoardConfig.mk files.
 include $(BUILD_SYSTEM)/android_soong_config_vars.mk
 
-ifneq ($(LINEAGE_BUILD),)
+ifneq ($(AURORA_BUILD),)
 ifneq ($(wildcard device/lineage/sepolicy/common/sepolicy.mk),)
 ## We need to be sure the global selinux policies are included
 ## last, to avoid accidental resetting by device configs
@@ -1297,23 +1261,19 @@ $(eval include device/lineage/sepolicy/common/sepolicy.mk)
 endif
 endif
 
-SOONG_VARIABLES := $(SOONG_OUT_DIR)/soong.$(TARGET_PRODUCT).variables
-SOONG_EXTRA_VARIABLES := $(SOONG_OUT_DIR)/soong.$(TARGET_PRODUCT).extra.variables
-
 ifeq ($(CALLED_FROM_SETUP),true)
 include $(BUILD_SYSTEM)/ninja_config.mk
 include $(BUILD_SYSTEM)/soong_config.mk
 endif
 
-SOONG_VARIABLES :=
-SOONG_EXTRA_VARIABLES :=
-
 -include external/ltp/android/ltp_package_list.mk
 DEFAULT_DATA_OUT_MODULES := ltp $(ltp_packages)
 .KATI_READONLY := DEFAULT_DATA_OUT_MODULES
 
+ifneq ($(AUROIRA_BUILD),)
 # Include any vendor specific config.mk file
 -include vendor/*/build/core/config.mk
+endif
 
 include $(BUILD_SYSTEM)/dumpvar.mk
 

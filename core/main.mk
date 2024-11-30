@@ -209,6 +209,12 @@ endif
 
 BUILD_WITHOUT_PV := true
 
+ifneq ($(AURORA_BUILD),)
+# ------------------------------------------------------------
+# Include vendor specific additions to build properties
+-include vendor/aurora/build/core/main.mk
+endif
+
 # ------------------------------------------------------------
 # Define a function that, given a list of module tags, returns
 # non-empty if that module should be installed in /system.
@@ -252,8 +258,6 @@ $(readonly-final-product-vars)
 
 ifneq ($(PRODUCT_ENFORCE_RRO_TARGETS),)
 ENFORCE_RRO_SOURCES :=
-ENFORCE_RRO_PACKAGES_PRODUCT :=
-ENFORCE_RRO_PACKAGES_VENDOR :=
 endif
 
 # Color-coded warnings including current module info
@@ -327,22 +331,6 @@ endef
 # -------------------------------------------------------------------
 ifneq ($(PRODUCT_ENFORCE_RRO_TARGETS),)
 $(call generate_all_enforce_rro_packages)
-
-_modules_with_rro_suffix :=
-$(foreach m,$(PRODUCT_PACKAGES), \
-  $(eval _modules_with_rro_suffix += $$(m)__$(PRODUCT_NAME)__auto_generated_rro_%))
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := enforce_rro_packages_product
-LOCAL_MODULE_TAGS := optional
-LOCAL_REQUIRED_MODULES := $(filter $(_modules_with_rro_suffix),$(ENFORCE_RRO_PACKAGES_PRODUCT))
-include $(BUILD_PHONY_PACKAGE)
-
-include $(CLEAR_VARS)
-LOCAL_MODULE := enforce_rro_packages_vendor
-LOCAL_MODULE_TAGS := optional
-LOCAL_REQUIRED_MODULES := $(filter $(_modules_with_rro_suffix),$(ENFORCE_RRO_PACKAGES_VENDOR))
-include $(BUILD_PHONY_PACKAGE)
 endif
 
 # -------------------------------------------------------------------
